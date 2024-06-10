@@ -1,6 +1,7 @@
 ﻿using AirportTicketBookingSystem.Controller;
 using AirportTicketBookingSystem.Controllers;
-using AirportTicketBookingSystem.Utilities;
+using Microsoft.Extensions.DependencyInjection;
+//using AirportTicketBookingSystem.Utilities;
 
 namespace AirportTicketBookingSystem
 
@@ -10,11 +11,17 @@ namespace AirportTicketBookingSystem
         static void Main(string[] args)
         {
 
-            PassengerController pc = PassengerController.GetInstance();
-            BookingController bc = BookingController.GetInstance();
+            var serviceProvider = new ServiceCollection()
+                .AddSingleton<PassengerController>()
+                .AddSingleton<BookingController>()
+                .AddAutoMapper(typeof(Program))
+                .BuildServiceProvider();
 
-            Menu menu = new Menu(pc, bc);
-            menu.StartMenu();
+            var pc = serviceProvider.GetService<PassengerController>();
+            var bc = serviceProvider.GetService<BookingController>();
+
+            //Menu menu = new Menu(pc, bc);
+            //menu.StartMenu();
 
 
 

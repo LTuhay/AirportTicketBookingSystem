@@ -7,23 +7,24 @@ namespace AirportTicketBookingSystem.Repository
     public class FlightRepository : IFlightRepository
     {
 
-        private string filePath = @"..\..\..\Data\FlightData.txt";
+        private string _filePath;
         private List<Flight> flights;
 
-        public FlightRepository()
+        public FlightRepository(string? filePath = null)
         {
+            _filePath = filePath ?? @"..\..\..\Data\FlightData.txt";
             flights = new List<Flight>();
             FlightUpload(filePath);
         }
 
-        void IFlightRepository.BatchFlightUpload(string fp) // Uploads flight data from file
+        public void BatchFlightUpload(string fp) // Uploads flight data from file
         {
             FlightUpload(fp);
         }
 
-        void IFlightRepository.BatchFlightUpload()
+        public void BatchFlightUpload()
         {
-            FlightUpload(filePath);
+            FlightUpload(_filePath);
         }
 
 
@@ -96,17 +97,17 @@ namespace AirportTicketBookingSystem.Repository
 
 
 
-        List<Flight> IFlightRepository.GetAllFlights()
+        public List<Flight> GetAllFlights()
         {
             return flights;
         }
 
-        Flight? IFlightRepository.GetFlightByNumber(string flightNumber)
+       public  Flight? GetFlightByNumber(string flightNumber)
         {
             return flights.FirstOrDefault(flight => flight.FlightNumber == flightNumber);
         }
 
-        List<Flight> IFlightRepository.GetFlightByParams(decimal minPrice, decimal maxPrice, string? departure, string? destination, DateTime departureDate, string? departureAirport, string? destinationAirport, string? travelClass)
+        public List<Flight> GetFlightByParams(decimal minPrice, decimal maxPrice, string? departure, string? destination, DateTime departureDate, string? departureAirport, string? destinationAirport, string? travelClass)
         {
             return flights
                 .Where(flight =>

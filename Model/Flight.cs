@@ -46,46 +46,6 @@ namespace AirportTicketBookingSystem.Model
         [Range(0, double.MaxValue, ErrorMessage = "First class price must be a non-negative number.")]
         public decimal FirstClassPrice { get; set; }
 
-        public Flight(string flightNumber, string departureCountry, string destinationCountry, DateTime departureDate, string departureAirport, string arrivalAirport, decimal economyPrice, decimal businessPrice, decimal firstClassPrice)
-        {
-            FlightNumber = flightNumber;
-            DepartureCountry = departureCountry;
-            DestinationCountry = destinationCountry;
-            DepartureDate = departureDate;
-            DepartureAirport = departureAirport;
-            ArrivalAirport = arrivalAirport;
-            EconomyPrice = economyPrice;
-            BusinessPrice = businessPrice;
-            FirstClassPrice = firstClassPrice;
-        }
 
-        public Flight()
-        {
-            FlightNumber = "New Flight";
-            DepartureCountry = "Unknown";
-            DestinationCountry = "Unknown";
-            DepartureDate = DateTime.Now;
-            DepartureAirport = "Unknown";
-            ArrivalAirport = "Unknown";
-            EconomyPrice = 0;
-            BusinessPrice = 0;
-            FirstClassPrice = 0;
-        }
-
-        public static Flight ToEntity(FlightDTO dto)
-        {
-            return new Flight
-            {
-                FlightNumber = dto.FlightNumber,
-                DepartureCountry = dto.DepartureCountry,
-                DestinationCountry = dto.DestinationCountry,
-                DepartureDate = dto.DepartureDate,
-                DepartureAirport = dto.DepartureAirport,
-                ArrivalAirport = dto.ArrivalAirport,
-                EconomyPrice = dto.EconomyPrice,
-                BusinessPrice = dto.BusinessPrice,
-                FirstClassPrice = dto.FirstClassPrice
-            };
-        }
     }
 }

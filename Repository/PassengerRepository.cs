@@ -9,19 +9,19 @@ namespace AirportTicketBookingSystem.Repository
 {
     public class PassengerRepository : IPassengerRepository
     {
-        private string filePath = @"..\..\..\Data\PeopleData.txt";
+        private string _filePath;
         private List<Passenger> passengers;
 
-        public PassengerRepository()
+        public PassengerRepository(string? filePath = null)
         {
             passengers = new List<Passenger>();
-            PassengerUpload(filePath);
+            _filePath = filePath ?? @"..\..\..\Data\PeopleData.txt";
 
         }
 
-        void IPassengerRepository.BatchFlightUpload(string fp) // Uploads file with passengers info when system is initiated
+        public void BatchPassengerUpload() // Uploads file with passengers info when system is initiated
         {
-            PassengerUpload(fp);
+            PassengerUpload(_filePath);
         }
 
         private void PassengerUpload(string fp)  
@@ -59,21 +59,21 @@ namespace AirportTicketBookingSystem.Repository
 
         }
 
-        Passenger? IPassengerRepository.GetPassengerById(int passengerId)
+        public Passenger? GetPassengerById(int passengerId)
         {
             return passengers.FirstOrDefault(passenger => passenger.Id == passengerId);
         }
-        void IPassengerRepository.AddPassenger(Passenger passenger)
+        public void AddPassenger(Passenger passenger)
         {
             passengers.Add(passenger);
             string line = $"{passenger.Id},{passenger.Name},{passenger.Email}\n";
-            using (StreamWriter writer = new StreamWriter(filePath, true))
+            using (StreamWriter writer = new StreamWriter(_filePath, true))
             {
                 writer.WriteLine(line);
             }
         }
 
-        List<Passenger> IPassengerRepository.GetAllPassengers() 
+        public List<Passenger> GetAllPassengers() 
         {
             return passengers;
         }

@@ -6,25 +6,26 @@ using System.Linq;
 
 namespace AirportTicketBookingSystem.Repository
 {
-    internal class BookingRepository : IBookingRepository
+    public class BookingRepository : IBookingRepository
     {
-        private string filePath = @"..\..\..\Data\BookingsData.txt";
+        private string _filePath = @"..\..\..\Data\BookingsData.txt";
         private List<Booking> bookings;
-        private IPassengerRepository passengerRepository;
-        private IFlightRepository flightRepository;
+        private IPassengerRepository _passengerRepository;
+        private IFlightRepository _flightRepository;
 
-        public BookingRepository(IPassengerRepository passengerRepository, IFlightRepository flightRepository)
+        public BookingRepository(IPassengerRepository passengerRepository, IFlightRepository flightRepository, string? filePath)
         {
-            this.passengerRepository = passengerRepository ?? throw new ArgumentNullException(nameof(passengerRepository));
-            this.flightRepository = flightRepository ?? throw new ArgumentNullException(nameof(flightRepository));
+            _passengerRepository = passengerRepository ?? throw new ArgumentNullException(nameof(passengerRepository));
+            _flightRepository = flightRepository ?? throw new ArgumentNullException(nameof(flightRepository));
+            _filePath = filePath ?? @"..\..\..\Data\BookingsData.txt";
 
             bookings = new List<Booking>();
             BookingUpload(filePath);
         }
 
-        void IBookingRepository.BatchBookingUpload() // Uploads bookings from file
+        public void BatchBookingUpload() // Uploads bookings from file
         {
-            BookingUpload(filePath);
+            BookingUpload(_filePath);
         }
 
         private void BookingUpload (string fp)
@@ -43,8 +44,8 @@ namespace AirportTicketBookingSystem.Repository
                             Booking booking = new Booking
                             {
                                 BookingId = parts[0],
-                                Passenger = passengerRepository.GetPassengerById(int.Parse(parts[1])),
-                                Flight = flightRepository.GetFlightByNumber(parts[2]),
+                                Passenger = _passengerRepository.GetPassengerById(int.Parse(parts[1])),
+                                Flight = _flightRepository.GetFlightByNumber(parts[2]),
                                 BookingClass = (BookingClass)Enum.Parse(typeof(BookingClass), parts[3]),
                                 BookingDate = DateTime.Parse(parts[4]),
                                 Price = decimal.Parse(parts[5])
@@ -64,22 +65,22 @@ namespace AirportTicketBookingSystem.Repository
             }
         }
 
-        void IBookingRepository.AddBooking(Booking booking)
+        public void AddBooking(Booking booking)
         {
             bookings.Add(booking);
             string line = $"{booking.BookingId},{booking.Passenger.Id},{booking.Flight.FlightNumber},{booking.BookingClass},{booking.BookingDate},{booking.Price}";
 
-            using (StreamWriter writer = new StreamWriter(filePath, true))
+            using (StreamWriter writer = new StreamWriter(_filePath, true))
             {
                 writer.WriteLine(line);
             }
         }
 
-        void IBookingRepository.DeleteBooking(string bookingId)
+        public void DeleteBooking(string bookingId)
         {
             string tempFile = Path.GetTempFileName();
 
-            using (var reader = new StreamReader(filePath))
+            using (var reader = new StreamReader(_filePath))
             using (var writer = new StreamWriter(tempFile))
             {
                 string ? line;
@@ -92,24 +93,24 @@ namespace AirportTicketBookingSystem.Repository
                 }
             }
 
-            File.Delete(filePath);
-            File.Move(tempFile, filePath);
+            File.Delete(_filePath);
+            File.Move(tempFile, _filePath);
 
             bookings.RemoveAll(booking => booking.BookingId == bookingId);
         }
 
-        List<Booking> IBookingRepository.GetBookingsByPassenger(int passengerId)
+        public List<Booking> GetBookingsByPassenger(int passengerId)
         {
             return bookings.Where(booking => booking.Passenger.Id == passengerId).ToList();
         }
 
-        void IBookingRepository.UpdateBooking(Booking booking)
+        public void UpdateBooking(Booking booking)
         {
             try
             {
                 string tempFile = Path.GetTempFileName();
 
-                using (var reader = new StreamReader(filePath))
+                using (var reader = new StreamReader(_filePath))
                 using (var writer = new StreamWriter(tempFile))
                 {
                     string? line;
@@ -132,8 +133,8 @@ namespace AirportTicketBookingSystem.Repository
                     }
                 }
 
-                File.Delete(filePath);
-                File.Move(tempFile, filePath);
+                File.Delete(_filePath);
+                File.Move(tempFile, _filePath);
             }
             catch (Exception ex)
             {
@@ -142,17 +143,17 @@ namespace AirportTicketBookingSystem.Repository
         }
 
 
-        List<Booking> IBookingRepository.GetAllBookings()
+        public List<Booking> GetAllBookings()
         {
             return bookings;
         }
 
-        Booking? IBookingRepository.GetBookingByID(string id)
+        public Booking? GetBookingByID(string id)
         {
             return bookings.FirstOrDefault(booking => booking.BookingId == id);
         }
 
-        List<Booking> IBookingRepository.GetBookingByParams(decimal minPrice, decimal maxPrice, string? departure, string? destination, DateTime departureDate, string? departureAirport, string? destinationAirport, string? travelClass)
+        public List<Booking> GetBookingByParams(decimal minPrice, decimal maxPrice, string? departure, string? destination, DateTime departureDate, string? departureAirport, string? destinationAirport, string? travelClass)
         {
 
             var filteredBookings = bookings
@@ -171,7 +172,7 @@ namespace AirportTicketBookingSystem.Repository
             return filteredBookings;
         }
 
-        List<Booking> IBookingRepository.GetBookingByFlightNumber(string FlightNumber)
+        public List<Booking> GetBookingByFlightNumber(string FlightNumber)
         {
             return bookings.Where(booking => booking.Flight.FlightNumber == FlightNumber).ToList();
         }

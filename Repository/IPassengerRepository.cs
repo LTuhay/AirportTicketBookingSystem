@@ -10,7 +10,7 @@ namespace AirportTicketBookingSystem.Repository
     public interface IPassengerRepository
     {
 
-        void BatchFlightUpload(string filePath);
+        void BatchPassengerUpload();
         List<Passenger> GetAllPassengers();
         Passenger? GetPassengerById(int passengerId);
         void AddPassenger(Passenger passenger);

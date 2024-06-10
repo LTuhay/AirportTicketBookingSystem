@@ -1,8 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "SA8hOjZ4qpNXwicmA0XB7SFYkMcvTcq5D1HpDOhuT2WXXoJGDnECBsUX1oAm3YP6H7J1JJKLRTZqVXS0gMMKzw==",
+  "dgSpecHash": "E6wk+j0ij1s0J781d4XSXReqqyj2MT+Eqdi3btDGIrthh+bsVH/a7fGzG5QXpzme/Dx54wGPPVoOpdZC229bsg==",
   "success": true,
   "projectFilePath": "C:\\Users\\loren\\source\\repos\\AirportTicketBookingSystem\\AirportTicketBookingSystem.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\loren\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
+    "C:\\Users\\loren\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\8.0.0\\microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
+    "C:\\Users\\loren\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\loren\\.nuget\\packages\\microsoft.extensions.options\\6.0.0\\microsoft.extensions.options.6.0.0.nupkg.sha512",
+    "C:\\Users\\loren\\.nuget\\packages\\microsoft.extensions.primitives\\6.0.0\\microsoft.extensions.primitives.6.0.0.nupkg.sha512",
+    "C:\\Users\\loren\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
+  ],
   "logs": []
 }

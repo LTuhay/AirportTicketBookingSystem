@@ -1,28 +1,21 @@
 ﻿using AirportTicketBookingSystem.Model;
 using AirportTicketBookingSystem.Repository;
 using AirportTicketBookingSystem.DTO;
+using AutoMapper;
 
 namespace AirportTicketBookingSystem.Controllers
 {
     public class PassengerController
     {
-        private static PassengerController? instance;
+
         private readonly IPassengerRepository _passengerRepository;
+        private readonly IMapper _mapper;
 
 
-        private PassengerController()
+        private PassengerController(IPassengerRepository passengerRepository, IMapper mapper)
         {
-            _passengerRepository = new PassengerRepository();
-        }
-
-
-        public static PassengerController GetInstance()
-        {
-            if (instance == null)
-            {
-                instance = new PassengerController();
-            }
-            return instance;
+            _passengerRepository = passengerRepository ?? throw new ArgumentNullException(nameof(passengerRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
 
@@ -30,11 +23,7 @@ namespace AirportTicketBookingSystem.Controllers
         {
             List<Passenger> passengers = _passengerRepository.GetAllPassengers();
             List<PassengerDTO> dtos = new List<PassengerDTO>();
-            foreach (Passenger passenger in passengers)
-            {
-                dtos.Add(PassengerDTO.FromPassenger(passenger));
-            }
-            return dtos;
+            return _mapper.Map<List<PassengerDTO>>(passengers);
         }
 
         public PassengerDTO? GetPassengerById (int id)
@@ -42,8 +31,7 @@ namespace AirportTicketBookingSystem.Controllers
             Passenger? passenger = _passengerRepository.GetPassengerById(id);
             if (passenger != null)
             {
-                PassengerDTO? passengerDto = PassengerDTO.FromPassenger(passenger);
-                return passengerDto;
+                return _mapper.Map<PassengerDTO>(passenger);
             }
             return null;
         }
@@ -57,11 +45,16 @@ namespace AirportTicketBookingSystem.Controllers
                 passenger= _passengerRepository.GetPassengerById(id);
             }
             else
-            {   
-                passenger = new Passenger(id, name, email);
+            {
+                passenger = new Passenger
+                {
+                    Id = id,
+                    Name = name,
+                    Email = email
+                };
                 _passengerRepository.AddPassenger(passenger);
             }
-            return (PassengerDTO.FromPassenger(passenger));
+            return _mapper.Map<PassengerDTO>(passenger);
         }
 
 

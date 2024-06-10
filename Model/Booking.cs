@@ -1,6 +1,8 @@
 ﻿using AirportTicketBookingSystem.DTO;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,36 +11,23 @@ namespace AirportTicketBookingSystem.Model
 {
     public class Booking
     {
+        [Required(ErrorMessage = "Booking ID is required.")]
         public string? BookingId { get; set; }
+
+        [Required(ErrorMessage = "Passenger is required.")]
         public Passenger? Passenger { get; set; }
+
+        [Required(ErrorMessage = "Fligh is required.")]
         public Flight? Flight { get; set; }
+        [Required(ErrorMessage = "Booking class is required.")]
         public BookingClass BookingClass { get; set; }
+
+        [Required(ErrorMessage = "Date time is required.")]
         public DateTime BookingDate { get; set; }
 
         public decimal Price { get; set; }
 
 
- 
-
-        public override string ToString()
-        {
-            return $"Booking ID: {BookingId}\n" +
-                   $"Passenger: {Passenger}\n" +
-                   $"Flight: {Flight}\n" +
-                   $"Class: {BookingClass}\n" +
-                   $"Booking Date: {BookingDate}\n" +
-                   $"Booking Price: {Price}";
-        }
-
-        public Booking()
-        {
-            BookingId = null;
-            Passenger = new Passenger();
-            Flight = new Flight();
-            BookingClass = BookingClass.Economy;
-            BookingDate = DateTime.Now;
-            Price = GetPriceForBookingClass();
-        }
 
         private decimal GetPriceForBookingClass()
         {
@@ -62,21 +51,5 @@ namespace AirportTicketBookingSystem.Model
         }
 
 
-        public static Booking ToEntity(BookingDTO dto)
-    {
-
-        Booking booking = new Booking
-        {
-            BookingId = dto.BookingId,
-            Passenger = Passenger.ToEntity(dto.Passenger),
-            Flight = Flight.ToEntity(dto.Flight),
-            BookingClass = Enum.Parse<BookingClass>(dto.BookingClass),
-            BookingDate = dto.BookingDate,
-            Price = dto.BookingPrice
-        };
-
-
-        return booking;
-    }
 }
 }

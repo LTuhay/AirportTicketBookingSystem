@@ -1,32 +1,27 @@
 ﻿using AirportTicketBookingSystem.DTO;
 using AirportTicketBookingSystem.Model;
 using AirportTicketBookingSystem.Repository;
+using AutoMapper;
 
 namespace AirportTicketBookingSystem.Controller
 {
     public class BookingController
     {
-        private static BookingController? instance;
+
         private readonly IFlightRepository _flightRepository;
         private readonly IPassengerRepository _passengerRepository;
         private readonly IBookingRepository _bookingRepository;
+        private readonly IMapper _mapper;
 
 
-        private BookingController()
+        private BookingController(IFlightRepository flightRepository, IPassengerRepository passengerRepository, IBookingRepository bookingRepository, IMapper mapper)
         {
-            _flightRepository = new FlightRepository();
-            _passengerRepository = new PassengerRepository();
-            _bookingRepository = new BookingRepository(_passengerRepository, _flightRepository);
+            _flightRepository = flightRepository ?? throw new ArgumentNullException(nameof(flightRepository));
+            _passengerRepository = passengerRepository ?? throw new ArgumentNullException(nameof(passengerRepository));
+            _bookingRepository = bookingRepository ?? throw new ArgumentNullException(nameof(bookingRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public static BookingController GetInstance()
-        {
-            if (instance == null)
-            {
-                instance = new BookingController();
-            }
-            return instance;
-        }
 
         public void BatchFlightUpload(string filePath)
         {
@@ -37,23 +32,14 @@ namespace AirportTicketBookingSystem.Controller
         public List<FlightDTO> GetAllFlights()
         {
             List<Flight>flights = _flightRepository.GetAllFlights();
-            List<FlightDTO> dto = new List<FlightDTO>();
-            foreach (Flight flight in flights)
-            {
-                dto.Add(FlightDTO.FromFlight(flight));
-            }
-            return dto;
+            return _mapper.Map<List<FlightDTO>>(flights);
+
         }
 
         public List<BookingDTO> GetBookingsByPassenger(int passengerId)
         {
             List<Booking> bookings = _bookingRepository.GetBookingsByPassenger(passengerId);
-            List<BookingDTO> dto = new List<BookingDTO>();
-            foreach (Booking booking in bookings)
-            {
-                dto.Add(BookingDTO.FromBooking(booking));
-            }
-            return dto;
+            return _mapper.Map<List<BookingDTO>>(bookings);
         }
 
         public FlightDTO? GetFlightsByNumber(string number)
@@ -61,7 +47,7 @@ namespace AirportTicketBookingSystem.Controller
             Flight? flight = _flightRepository.GetFlightByNumber(number);
             if (flight != null)
             {
-                return FlightDTO.FromFlight(flight);
+                return _mapper.Map<FlightDTO>(flight);
             }
 
             return null;
@@ -69,34 +55,19 @@ namespace AirportTicketBookingSystem.Controller
         public List<FlightDTO> GetFlightsByParams(decimal minPrice, decimal maxPrice, string? departure, string? destination, DateTime departureDate, string? departureAirport, string? destinationAirport, string? travelClass)
         {
             List<Flight> flights = _flightRepository.GetFlightByParams(minPrice, maxPrice, departure, destination, departureDate, departureAirport, destinationAirport, travelClass);
-            List<FlightDTO> dto = new List<FlightDTO>();
-            foreach (Flight flight in flights)
-            {
-                dto.Add(FlightDTO.FromFlight(flight));
-            }
-            return dto;
+            return _mapper.Map<List<FlightDTO>>(flights);
         }
 
         public List<BookingDTO> GetBookingsByParams(decimal minPrice, decimal maxPrice, string? departure, string? destination, DateTime departureDate, string? departureAirport, string? destinationAirport, string? travelClass)
         {
             List<Booking> bookings = _bookingRepository.GetBookingByParams(minPrice, maxPrice, departure, destination, departureDate, departureAirport, destinationAirport, travelClass);
-            List<BookingDTO> dto = new List<BookingDTO>();
-            foreach (Booking booking in bookings)
-            {
-                dto.Add(BookingDTO.FromBooking(booking));
-            }
-            return dto;
+            return _mapper.Map<List<BookingDTO>>(bookings);
         }
 
         public List<BookingDTO> GetAllBookings() 
         { 
             List<Booking> bookings = _bookingRepository.GetAllBookings();
-            List<BookingDTO> dto = new List<BookingDTO>();
-            foreach (Booking booking in bookings)
-            {
-                dto.Add(BookingDTO.FromBooking(booking));
-            }
-            return dto;
+            return _mapper.Map<List<BookingDTO>>(bookings);
         }
 
         public Guid GenerateUniqueBookingId()
@@ -115,19 +86,15 @@ namespace AirportTicketBookingSystem.Controller
 
         public void AddBooking (BookingDTO booking)
         {
-            _bookingRepository.AddBooking(Booking.ToEntity(booking));
+            
+            _bookingRepository.AddBooking(_mapper.Map<Booking>(booking));
         }
 
 
         public List<BookingDTO> GetBookingsByFlightNumber(string flightNumber)
         {
             List<Booking> bookings = _bookingRepository.GetBookingByFlightNumber(flightNumber);
-            List<BookingDTO> dto = new List<BookingDTO>();
-            foreach (Booking booking in bookings)
-            {
-                dto.Add(BookingDTO.FromBooking(booking));
-            }
-            return dto;
+            return _mapper.Map<List<BookingDTO>>(bookings);
         }
 
         public BookingDTO? GetBookingById(string id)
@@ -135,7 +102,7 @@ namespace AirportTicketBookingSystem.Controller
             Booking? booking = _bookingRepository.GetBookingByID(id);
             if (booking != null)
             {
-                return BookingDTO.FromBooking(booking);
+                return _mapper.Map<BookingDTO>(booking);
             }
             return null;
         }
@@ -147,7 +114,7 @@ namespace AirportTicketBookingSystem.Controller
 
         public void UpdateBooking(BookingDTO booking)
         {
-            _bookingRepository.UpdateBooking(Booking.ToEntity(booking));
+            _bookingRepository.UpdateBooking(_mapper.Map<Booking>(booking));
         }
 
         public void ImportConstraints()
